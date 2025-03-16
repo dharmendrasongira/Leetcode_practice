@@ -14,23 +14,21 @@
  * }
  */
 class Solution {
-    public TreeNode  pre(TreeNode root,List ans){
-        if(root==null)return null;
-          ans.add(root);
-        pre(root.left,ans);
-        pre(root.right,ans);
-        return root;
-    } 
     public void flatten(TreeNode root) {
-       List<TreeNode> ans  = new ArrayList<>();
+        if (root == null) return;
+        
+        // Recursively flatten left and right subtrees
+        flatten(root.left);
+        flatten(root.right);
 
-       pre( root, ans); 
-       for(int i=0;i<ans.size();i++){
-       TreeNode temp= ans.get(i);
-              temp.left=null;
-       if(i != ans.size()-1) temp.right=ans.get(i+1);
-
-       }
-   
+        if (root.left != null) {
+            TreeNode temp = root.left;
+            while (temp.right != null) {  
+                temp = temp.right;
+            }
+            temp.right = root.right;  // Attach original right subtree
+            root.right = root.left;   // Move left subtree to the right
+            root.left = null;         // Set left to null
+        }
     }
 }
