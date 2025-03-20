@@ -1,23 +1,30 @@
-
-
 class Solution {
     public boolean isAnagram(String s, String t) {
-        if (s.length() != t.length()) return false;
+        if(s.length() != t.length()) return false;
+         HashMap<Character, Integer> smap = new HashMap<Character, Integer>();
+         HashMap<Character, Integer> tmap = new HashMap<Character, Integer>();
+               
+      for(int i =0; i<s.length();i++){
+             int scount =1;
+             int tcount =1;
+         if (smap.containsKey(s.charAt(i))){
+            scount= smap.get(s.charAt(i));
+           scount++;
+         }
+          if (tmap.containsKey(t.charAt(i))){
+              tcount= tmap.get(t.charAt(i));
+           tcount++;
+         }
+        tmap.put(t.charAt(i),tcount);
+        smap.put(s.charAt(i),scount);  
+      }
 
-        Map<Character, Integer> countMap = new HashMap<>();
-
-        // Count characters in s
-        for (char c : s.toCharArray()) {
-            countMap.put(c, countMap.getOrDefault(c, 0) + 1);
+      for (int i = 0; i < s.length(); i++) {
+            char check = s.charAt(i);
+            if (!smap.get(check).equals(tmap.get(check))) {
+                return false;
+            }
         }
-
-        // Decrease count for characters in t
-        for (char c : t.toCharArray()) {
-            if (!countMap.containsKey(c)) return false;
-            countMap.put(c, countMap.get(c) - 1);
-            if (countMap.get(c) == 0) countMap.remove(c);
-        }
-
-        return countMap.isEmpty();
+        return true;       
     }
 }
