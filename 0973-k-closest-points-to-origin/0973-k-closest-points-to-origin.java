@@ -1,31 +1,46 @@
 import java.util.*;
 
 class Solution {
+
+    // Custom Class to Store (distance, x, y)
+    class Triplet {
+        int d, x, y;
+
+        Triplet(int d, int x, int y) {
+            this.d = d;
+            this.x = x;
+            this.y = y;
+        }
+    }
+
     public int[][] kClosest(int[][] points, int k) {
-        TreeMap<Integer, List<Integer>> map = new TreeMap<>(); // Fixed: Store list of indexes
         int n = points.length;
-        int[][] ans = new int[k][2]; // Fixed: Properly declare ans array
 
-        // Calculate distance and store in TreeMap
+        // Max Heap (Descending Order of Distance)
+        PriorityQueue<Triplet> pq = new PriorityQueue<>(new Comparator<Triplet>() {
+            public int compare(Triplet a, Triplet b) {
+                return Integer.compare(b.d, a.d); // Max Heap based on distance
+            }
+        });
+
+        // Add Points to Priority Queue
         for (int i = 0; i < n; i++) {
-            int x = points[i][0] * points[i][0];
-            int y = points[i][1] * points[i][1];
-            int dis = x + y; // Fixed: Corrected distance formula (x² + y²)
+            int x = points[i][0];
+            int y = points[i][1];
+            int dis = x * x + y * y;
 
-            // If distance already exists, add to the list
-            map.putIfAbsent(dis, new ArrayList<>());
-            map.get(dis).add(i);
+            pq.add(new Triplet(dis, x, y));
+            if (pq.size() > k) {
+                pq.poll(); // Remove the farthest element
+            }
         }
 
-        int i = 0;
-        for (Map.Entry<Integer, List<Integer>> entry : map.entrySet()) { // Fixed: Correct way to get first 'k' elements
-            for (int index : entry.getValue()) {
-                if (i >= k) break; // Stop when we have 'k' points
-                ans[i][0] = points[index][0];
-                ans[i][1] = points[index][1];
-                i++;
-            }
-            if (i >= k) break;
+        // Extract k closest points
+        int[][] ans = new int[k][2];
+        for (int i = 0; i < k; i++) {
+            Triplet t = pq.poll();
+            ans[i][0] = t.x;
+            ans[i][1] = t.y;
         }
 
         return ans;
