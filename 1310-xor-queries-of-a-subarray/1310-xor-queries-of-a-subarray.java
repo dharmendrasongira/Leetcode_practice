@@ -3,18 +3,21 @@ class Solution {
         int q = queries.length;   // Number of queries
         int[] ans = new int[q];    // Answer array for each query
         
-        for (int i = 0; i < q; i++) {
-            int left = queries[i][0];
-            int right = queries[i][1];
-            
-            int xor = 0; // Initialize xor for this query
-            
-            for (int j = left; j <= right; j++) {
-                xor ^= arr[j]; // XOR all elements from left to right
-            }
-            
-            ans[i] = xor; // Store result
+       for(int i=1;i<arr.length; i++){
+         arr[i] ^=arr[i-1];
+       }
+
+       for(int j=0;j<q;j++){
+        int xor=0;
+        int left = queries[j][0];
+        int right = queries[j][1];
+        if(left ==0 ){
+           xor= arr[right];
         }
+        else { xor = arr[left-1]^arr[right];}
+        ans[j]=xor;
+       }
+
         
         return ans;
     }
